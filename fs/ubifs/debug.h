@@ -184,11 +184,8 @@ const char *dbg_key_str1(const struct ubifs_info *c,
 
 extern spinlock_t dbg_lock;
 
-#define ubifs_dbg_msg(type, fmt, ...) do {                        \
-	spin_lock(&dbg_lock);                                     \
-	pr_debug("UBIFS DBG " type ": " fmt "\n", ##__VA_ARGS__); \
-	spin_unlock(&dbg_lock);                                   \
-} while (0)
+#define ubifs_dbg_msg(type, fmt, ...) \
+	pr_debug("UBIFS DBG " type ": " fmt "\n", ##__VA_ARGS__)
 
 /* Just a debugging messages not related to any specific UBIFS subsystem */
 #define dbg_msg(fmt, ...)                                                     \
