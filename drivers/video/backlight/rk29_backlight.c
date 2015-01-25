@@ -50,36 +50,30 @@ static struct backlight_device *rk29_bl;
 static int suspend_flag = 0;
 
 
-int convertint(const char s[])  
-{  
-    int i;  
-    int n = 0;  
-    for (i = 0; s[i] >= '0' && s[i] <= '9'; ++i)  
-    {  
-        n = 10 * n + (s[i] - '0');  
-    }  
-    return n;  
-} 
-
 static ssize_t backlight_write(struct device *dev, 
 		struct device_attribute *attr,const char *buf, size_t count)
 {
    
 	struct rk29_bl_info *rk29_bl_info = bl_get_data(rk29_bl);
 	int number;
+	int ret;
 
-	number = convertint(buf);
+	ret = sscanf(buf, "%d", &number);
+	if (!ret || number < 0 || number > 255) {
+		return -EINVAL;
+	}
 	
 	rk29_bl_info->min_brightness=number;
-	return 0;
+	return count;
 }
 
 
 static ssize_t backlight_read(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
+	struct rk29_bl_info *rk29_bl_info = bl_get_data(rk29_bl);
 	DBG("rk29_bl_info->min_brightness=%d\n",rk29_bl_info->min_brightness);
-	return 0;
+	return sprintf(buf, "%d\n", rk29_bl_info->min_brightness);
 }
 static DEVICE_ATTR(rk29backlight, 0660, backlight_read, backlight_write);
 
