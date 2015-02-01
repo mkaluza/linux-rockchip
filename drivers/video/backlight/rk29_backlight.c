@@ -31,7 +31,7 @@
 #define PWM_DIV              PWM_DIV2
 #define PWM_APB_PRE_DIV      1000
 #define BL_STEP              (255)
-#define MAX_BRIGHTNESS_CORRECT (50)
+#define MAX_BRIGHTNESS_CORRECT (10)
 
 /*
  * Debug
