@@ -185,39 +185,23 @@ static long us5151_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	return 0;
 }
 
+#define THRESHOLD_COUNT 7
+static unsigned short int thresholds[THRESHOLD_COUNT] = { 30, 100, 150, 220, 280, 350, 420 };
+
 static void us5151_value_report(struct input_dev *input, int data)
 {
 	unsigned char index = 0;
-	if(data <= 30){
-		index = 0;goto report;
-	}
-	else if(data <= 100){
-		index = 1;goto report;
-	}
-	else if(data <= 150){
-		index = 2;goto report;
-	}
-	else if(data <= 220){
-		index = 3;goto report;
-	}
-	else if(data <= 280){
-		index = 4;goto report;
-	}
-	else if(data <= 350){
-		index = 5;goto report;
-	}
-	else if(data <= 420){
-		index = 6;goto report;
-	}
-	else{
-		index = 7;goto report;
-	}
-report:
+	for(;index < THRESHOLD_COUNT; index++)
+		if (data <= thresholds[index])
+			break;
+
 	DBG("us5151 report index = %d data=%d\n",index,data);
 	input_report_abs(input, ABS_MISC, index);
 	input_sync(input);
 	return;
 }
+
+static int last_value = 0;
 
 static void us5151_read(struct work_struct *work)
 {
@@ -235,6 +219,7 @@ static void us5151_read(struct work_struct *work)
 	{
 		adc_value = value[1]>>7 | value[0]<<1;
 		DBG("%s......%d ret=%d value[0]=%d value[1]=%d adc_value=%d enable=%d\n",__FUNCTION__,__LINE__,ret,value[0],value[1],adc_value,enable[0]);		
+		last_value = adc_value;
 		us5151_value_report(us5151->input,adc_value);
 	}
 	else
