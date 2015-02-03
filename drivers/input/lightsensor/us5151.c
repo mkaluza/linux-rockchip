@@ -378,13 +378,39 @@ static struct i2c_driver us5151_driver = {
 	.id_table = us5151_i2c_id,
 };
 
+#define ATTR_RO(_name)	\
+	static struct kobj_attribute _name##_interface = __ATTR(_name, 0444, _name##_show, NULL);
+
+#define ATTR_WO(_name)	\
+	static struct kobj_attribute _name##_interface = __ATTR(_name, 0220, NULL, _name##_store);
+
+#define ATTR_RW(_name)	\
+	static struct kobj_attribute _name##_interface = __ATTR(_name, 0644, _name##_show, _name##_store);
+
+static struct attribute *us5151_attrs[] = {
+	NULL,
+};
+
+static struct attribute_group us5151_interface_group = {
+	.attrs = us5151_attrs,
+};
+
+static struct kobject *us5151_kobject;
+
 static int __init us5151_init(void)
 {
+	//TODO checks
+	us5151_kobject = kobject_create_and_add("us5151", kernel_kobj);
+	sysfs_create_group(us5151_kobject, &us5151_interface_group);
+
 	return i2c_add_driver(&us5151_driver);
 }
 
 static void __exit us5151_exit(void)
 {
+	//TODO checks
+	sysfs_remove_group(us5151_kobject, &us5151_interface_group);
+	kobject_put(us5151_kobject);
 	i2c_del_driver(&us5151_driver);
 }
 
