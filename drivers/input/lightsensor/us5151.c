@@ -398,9 +398,36 @@ static ssize_t thresholds_store(struct kobject *kobj, struct kobj_attribute *att
 
 ATTR_RW(thresholds);
 
+static ssize_t enabled_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", start_flag);
+}
+
+static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count, int _index)
+{
+	int ret;
+	int val;
+
+	ret = sscanf(buf, "%d", &val);
+	if (!ret || (val != 0 && val != 1)) return -EINVAL;
+
+	if (start_flag == val) return count;
+
+	start_flag = val;
+	if(start_flag)
+		us5151_start(light);
+	else
+		us5151_stop(light);
+
+	return count;
+}
+
+ATTR_RW(enabled);
+
 static struct attribute *us5151_attrs[] = {
 	&last_value_interface.attr,
 	&thresholds_interface.attr,
+	&enabled_interface.attr,
 	NULL,
 };
 
