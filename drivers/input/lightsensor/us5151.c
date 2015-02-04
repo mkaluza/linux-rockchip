@@ -54,6 +54,9 @@ static struct early_suspend us5151_early_suspend;
 #endif
 static struct us5151_data *light;
 
+static unsigned int sampling_rate_ms = 3000;
+module_param(sampling_rate_ms, uint, 0644);
+
 static int us5151_rx_data(struct i2c_client *client, char *rxData, int length)
 {
 	int ret = 0;
@@ -89,7 +92,7 @@ static int us5151_start(struct us5151_data *data)
 	if (ret == 0)
 	{
 		us5151->statue = SENSOR_ON;
-		us5151->timer.expires  = jiffies + 3*HZ;
+		us5151->timer.expires  = jiffies + sampling_rate_ms*HZ/1000;
 		add_timer(&us5151->timer);
 	}
 	else
