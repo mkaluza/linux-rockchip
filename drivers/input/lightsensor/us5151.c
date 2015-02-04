@@ -54,6 +54,9 @@ static struct early_suspend us5151_early_suspend;
 #endif
 static struct us5151_data *light;
 
+static unsigned int sampling_rate_ms = 3000;
+module_param(sampling_rate_ms, uint, 0644);
+
 static int us5151_rx_data(struct i2c_client *client, char *rxData, int length)
 {
 	int ret = 0;
@@ -89,7 +92,7 @@ static int us5151_start(struct us5151_data *data)
 	if (ret == 0)
 	{
 		us5151->statue = SENSOR_ON;
-		us5151->timer.expires  = jiffies + 3*HZ;
+		us5151->timer.expires  = jiffies + sampling_rate_ms*HZ/1000;
 		add_timer(&us5151->timer);
 	}
 	else
@@ -384,7 +387,7 @@ static ssize_t thresholds_show(struct kobject *kobj, struct kobj_attribute *attr
 	return sprintf(buf, "%d,%d,%d,%d,%d,%d,%d\n", thresholds[0], thresholds[1], thresholds[2], thresholds[3], thresholds[4], thresholds[5], thresholds[6]);		//FIXME: this is ugly... lazy me...
 }
 
-static ssize_t thresholds_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count, int _index)
+static ssize_t thresholds_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
 {
 	int ret;
 	//int val;
@@ -398,9 +401,36 @@ static ssize_t thresholds_store(struct kobject *kobj, struct kobj_attribute *att
 
 ATTR_RW(thresholds);
 
+static ssize_t enabled_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", start_flag);
+}
+
+static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
+{
+	int ret;
+	int val;
+
+	ret = sscanf(buf, "%d", &val);
+	if (!ret || (val != 0 && val != 1)) return -EINVAL;
+
+	if (start_flag == val) return count;
+
+	start_flag = val;
+	if(start_flag)
+		us5151_start(light);
+	else
+		us5151_stop(light);
+
+	return count;
+}
+
+ATTR_RW(enabled);
+
 static struct attribute *us5151_attrs[] = {
 	&last_value_interface.attr,
 	&thresholds_interface.attr,
+	&enabled_interface.attr,
 	NULL,
 };
 
