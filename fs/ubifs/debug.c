@@ -32,6 +32,7 @@
 #include <linux/math64.h>
 #include <linux/uaccess.h>
 #include <linux/random.h>
+#include <linux/kconfig.h>
 #include "ubifs.h"
 
 static DEFINE_SPINLOCK(dbg_lock);
