@@ -387,7 +387,7 @@ static ssize_t thresholds_show(struct kobject *kobj, struct kobj_attribute *attr
 	return sprintf(buf, "%d,%d,%d,%d,%d,%d,%d\n", thresholds[0], thresholds[1], thresholds[2], thresholds[3], thresholds[4], thresholds[5], thresholds[6]);		//FIXME: this is ugly... lazy me...
 }
 
-static ssize_t thresholds_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count, int _index)
+static ssize_t thresholds_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
 {
 	int ret;
 	//int val;
@@ -406,7 +406,7 @@ static ssize_t enabled_show(struct kobject *kobj, struct kobj_attribute *attr, c
 	return sprintf(buf, "%d\n", start_flag);
 }
 
-static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count, int _index)
+static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
 {
 	int ret;
 	int val;
