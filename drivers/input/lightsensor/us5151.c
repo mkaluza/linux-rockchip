@@ -260,10 +260,13 @@ static ssize_t us5151_start_store(struct device *dev,
 {
 
 	DBG("%s......\n",__FUNCTION__);
-	if (*buf == 'A')
+	if (*buf == 'A') {
+		start_flag = 1;
 		us5151_start(light);
+	}
 	else
 	{
+		start_flag = 0;
 		us5151_stop(light);
 		printk("%s.........%s\n",__FUNCTION__,buf);
 	}
@@ -403,7 +406,7 @@ ATTR_RW(thresholds);
 
 static ssize_t enabled_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
-	return sprintf(buf, "%d\n", start_flag);
+	return sprintf(buf, "%d\n", light->statue);
 }
 
 static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
