@@ -372,7 +372,35 @@ static struct i2c_driver us5151_driver = {
 #define ATTR_RW(_name)	\
 	static struct kobj_attribute _name##_interface = __ATTR(_name, 0644, _name##_show, _name##_store);
 
+static ssize_t last_value_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", last_value);
+}
+
+ATTR_RO(last_value);
+
+static ssize_t thresholds_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d,%d,%d,%d,%d,%d,%d\n", thresholds[0], thresholds[1], thresholds[2], thresholds[3], thresholds[4], thresholds[5], thresholds[6]);		//FIXME: this is ugly... lazy me...
+}
+
+static ssize_t thresholds_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count, int _index)
+{
+	int ret;
+	//int val;
+	//unsigned short int temp[THRESHOLD_COUNT];
+	//int i;
+	ret = sscanf(buf, "%hu,%hu,%hu,%hu,%hu,%hu,%hu", &thresholds[0], &thresholds[1], &thresholds[2], &thresholds[3], &thresholds[4], &thresholds[5], &thresholds[6]);
+	if (!ret) return -EINVAL;
+
+	return count;
+}
+
+ATTR_RW(thresholds);
+
 static struct attribute *us5151_attrs[] = {
+	&last_value_interface.attr,
+	&thresholds_interface.attr,
 	NULL,
 };
 
