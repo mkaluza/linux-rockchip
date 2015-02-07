@@ -114,9 +114,9 @@ int ovl_permission(struct inode *inode, int mask)
 	}
 
 	if (realinode->i_op->permission)
-		err = realinode->i_op->permission(realinode, mask);
+		err = realinode->i_op->permission(realinode, mask, 0);
 	else
-		err = generic_permission(realinode, mask);
+		err = generic_permission(realinode, mask, 0, NULL);
 out_dput:
 	dput(alias);
 	return err;
