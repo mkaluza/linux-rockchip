@@ -2146,13 +2146,26 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level1[] = {
 };
 // ds1006h 10'
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level2[] = {
+        {.frequency = 126 * 1000,       .index = 850 * 1000},
+        {.frequency = 216 * 1000,       .index = 875 * 1000},
         {.frequency = 312 * 1000,       .index = 900 * 1000},
+        {.frequency = 408 * 1000,       .index = 925 * 1000},
         {.frequency = 504 * 1000,       .index = 925 * 1000},
+        {.frequency = 600 * 1000,       .index = 950 * 1000},
+        {.frequency = 696 * 1000,       .index = 975 * 1000},
         {.frequency = 816 * 1000,       .index = 1000 * 1000},
+        {.frequency = 912 * 1000,       .index = 1050 * 1000},
         {.frequency = 1008 * 1000,      .index = 1075 * 1000},
+        {.frequency = 1104 * 1000,      .index = 1125 * 1000},
         {.frequency = 1200 * 1000,      .index = 1200 * 1000},
+        {.frequency = 1296 * 1000,      .index = 1225 * 1000},
         {.frequency = 1416 * 1000,      .index = 1250 * 1000},
+        {.frequency = 1512 * 1000,      .index = 1300 * 1000},
         {.frequency = 1608 * 1000,      .index = 1350 * 1000},
+        {.frequency = 1632 * 1000,      .index = 1375 * 1000},
+        {.frequency = 1656 * 1000,      .index = 1375 * 1000},
+        {.frequency = 1680 * 1000,      .index = 1375 * 1000},
+        {.frequency = 1704 * 1000,      .index = 1375 * 1000},
         {.frequency = CPUFREQ_TABLE_END},
 };
 //if you board is good for volt quality,select dvfs_arm_table_volt_level0
