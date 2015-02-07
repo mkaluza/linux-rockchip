@@ -648,6 +648,7 @@ static struct cpufreq_frequency_table dep_cpu2core_table[] = {
 	{.frequency	= CPUFREQ_TABLE_END},
 };
 
+//FIXME ddr missing
 static struct vd_node vd_cpu = {
 	.name 		= "vd_cpu",
 	.regulator_name	= "vdd_cpu",

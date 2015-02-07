@@ -451,6 +451,7 @@ void act8846_device_suspend(void)
 	#ifdef CONFIG_ACT8846_SUPPORT_RESET
 	sram_gpio_set_value(pmic_vsel, GPIO_LOW);  
 	
+	//FIXME ddr missing
 	dcdc =dvfs_get_regulator( "vdd_cpu");
 	vdd_cpu_vol = regulator_get_voltage(dcdc);
 	regulator_set_voltage(dcdc, 900000, 900000);
@@ -474,6 +475,7 @@ void act8846_device_resume(void)
 	struct regulator *dcdc;
 	#ifdef CONFIG_ACT8846_SUPPORT_RESET
 
+	//FIXME ddr missing
 	dcdc =dvfs_get_regulator( "vdd_cpu");
 	regulator_set_voltage(dcdc, vdd_cpu_vol, vdd_cpu_vol);
 	udelay(100);
