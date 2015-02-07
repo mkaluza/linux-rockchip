@@ -119,7 +119,7 @@ static unsigned int get_freq_from_table(unsigned int max_freq)
 }
 
 /**********************thermal limit**************************/
-#define CONFIG_RK30_CPU_FREQ_LIMIT_BY_TEMP
+#define XCONFIG_RK30_CPU_FREQ_LIMIT_BY_TEMP
 
 #ifdef CONFIG_RK30_CPU_FREQ_LIMIT_BY_TEMP
 static unsigned int temp_limit_freq = -1;
