@@ -2162,10 +2162,14 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level2[] = {
         {.frequency = 1416 * 1000,      .index = 1250 * 1000},
         //{.frequency = 1512 * 1000,      .index = 1300 * 1000},
         {.frequency = 1608 * 1000,      .index = 1350 * 1000},
-        {.frequency = 1632 * 1000,      .index = 1375 * 1000},
-        {.frequency = 1656 * 1000,      .index = 1375 * 1000},
-        {.frequency = 1680 * 1000,      .index = 1375 * 1000},
-        {.frequency = 1704 * 1000,      .index = 1375 * 1000},
+        {.frequency = 1632 * 1000,      .index = 1350 * 1000},
+        {.frequency = 1656 * 1000,      .index = 1400 * 1000},
+        {.frequency = 1680 * 1000,      .index = 1400 * 1000},
+        {.frequency = 1704 * 1000,      .index = 1400 * 1000},
+        {.frequency = 1728 * 1000,      .index = 1450 * 1000},
+        {.frequency = 1752 * 1000,      .index = 1450 * 1000},
+        {.frequency = 1776 * 1000,      .index = 1450 * 1000},
+        {.frequency = 1800 * 1000,      .index = 1500 * 1000},
         {.frequency = CPUFREQ_TABLE_END},
 };
 //if you board is good for volt quality,select dvfs_arm_table_volt_level0
