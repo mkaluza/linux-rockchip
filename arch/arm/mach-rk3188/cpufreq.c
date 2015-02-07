@@ -96,6 +96,7 @@ static unsigned int rk3188_cpufreq_get(unsigned int cpu)
 
 static bool cpufreq_is_ondemand(struct cpufreq_policy *policy)
 {
+	//FIXME - wtf??
 	char c = 0;
 	if (policy && policy->governor)
 		c = policy->governor->name[0];
@@ -221,6 +222,7 @@ static struct cpufreq_frequency_table temp_limits_gpu_perf[] = {
 
 static int rk3188_get_temp(void)
 {
+	//FIXME try to estimate temp based on cpu freq, load and voltage
 	return 60;
 }
 
