@@ -540,6 +540,7 @@ static int rk3188_cpufreq_init(struct cpufreq_policy *policy)
 	if (is_smp())
 		cpumask_setall(policy->cpus);
 
+	policy->max = 1608000;	//FIXME verify that it exists
 	return 0;
 }
 
