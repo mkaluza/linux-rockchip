@@ -74,8 +74,8 @@ static unsigned int suspend_volt = 1100000; // 1.1V
 static unsigned int suspend_volt = 1000000; // 1V
 #endif
 
-module_param(suspend_freq, uint, 644);
-module_param(suspend_volt, uint, 644);
+module_param(suspend_freq, uint, 0644);
+module_param(suspend_volt, uint, 0644);
 
 static unsigned int low_battery_freq = 600 * 1000;
 static unsigned int low_battery_capacity = 5; // 5%
@@ -104,7 +104,7 @@ static bool cpufreq_is_ondemand(struct cpufreq_policy *policy)
 	char c = 0;
 	if (policy && policy->governor)
 		c = policy->governor->name[0];
-	return (c == 'o' || c == 'i' || c == 'c' || c == 'h');
+	return (c == 'o' || c == 'i' || c == 'c' || c == 'h' || c =='d');
 }
 
 static unsigned int get_freq_from_table(unsigned int max_freq)
