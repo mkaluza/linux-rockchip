@@ -104,7 +104,7 @@ static bool cpufreq_is_ondemand(struct cpufreq_policy *policy)
 	char c = 0;
 	if (policy && policy->governor)
 		c = policy->governor->name[0];
-	return (c == 'o' || c == 'i' || c == 'c' || c == 'h');
+	return (c == 'o' || c == 'i' || c == 'c' || c == 'h' || c =='d');
 }
 
 static unsigned int get_freq_from_table(unsigned int max_freq)
