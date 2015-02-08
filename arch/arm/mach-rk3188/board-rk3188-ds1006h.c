@@ -2162,14 +2162,14 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level2[] = {
         {.frequency = 1416 * 1000,      .index = 1250 * 1000},
         //{.frequency = 1512 * 1000,      .index = 1300 * 1000},
         {.frequency = 1608 * 1000,      .index = 1350 * 1000},
-        {.frequency = 1632 * 1000,      .index = 1350 * 1000},
-        {.frequency = 1656 * 1000,      .index = 1400 * 1000},
+        //{.frequency = 1632 * 1000,      .index = 1350 * 1000},
+        //{.frequency = 1656 * 1000,      .index = 1400 * 1000},
         {.frequency = 1680 * 1000,      .index = 1400 * 1000},
-        {.frequency = 1704 * 1000,      .index = 1400 * 1000},
-        {.frequency = 1728 * 1000,      .index = 1450 * 1000},
-        {.frequency = 1752 * 1000,      .index = 1450 * 1000},
+        //{.frequency = 1704 * 1000,      .index = 1400 * 1000},
+        //{.frequency = 1728 * 1000,      .index = 1450 * 1000},
+        //{.frequency = 1752 * 1000,      .index = 1450 * 1000},
         {.frequency = 1776 * 1000,      .index = 1450 * 1000},
-        {.frequency = 1800 * 1000,      .index = 1500 * 1000},
+        //{.frequency = 1800 * 1000,      .index = 1500 * 1000},
         {.frequency = CPUFREQ_TABLE_END},
 };
 //if you board is good for volt quality,select dvfs_arm_table_volt_level0
@@ -2202,6 +2202,7 @@ static struct cpufreq_frequency_table dvfs_gpu_table_volt_level1[] = {
 /******************************** ddr dvfs frequency volt table **********************************/
 static struct cpufreq_frequency_table dvfs_ddr_table_volt_level0[] = {
 	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
+	{.frequency = 200 * 1000 + DDR_FREQ_IDLE,    .index = 950 * 1000},	//TODO lower susup/idle to 100?
 	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
 	{.frequency = 396 * 1000 + DDR_FREQ_NORMAL,     .index = 1100 * 1000},
         {.frequency = 460 * 1000 + DDR_FREQ_DUALVIEW,     .index = 1150 * 1000},
