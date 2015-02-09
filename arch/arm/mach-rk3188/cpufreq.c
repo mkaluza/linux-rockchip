@@ -708,16 +708,15 @@ static int rk3188_cpufreq_pm_notifier_event(struct notifier_block *this, unsigne
 {
 	int ret = NOTIFY_DONE;
 	struct cpufreq_policy *policy = cpufreq_cpu_get(0);
+	static int min_freq=0;
 
 	if (!policy)
 		return ret;
 
-	if (!cpufreq_is_ondemand(policy))
-		goto out;
-
 	switch (event) {
 	case PM_SUSPEND_PREPARE:
-		ret = cpufreq_driver_target(policy, suspend_freq, DISABLE_FURTHER_CPUFREQ | CPUFREQ_RELATION_H);
+		min_freq = policy->min;
+		ret = cpufreq_update_freq(policy, suspend_freq, policy->max);
 		if (ret < 0) {
 			ret = NOTIFY_BAD;
 			goto out;
@@ -726,7 +725,10 @@ static int rk3188_cpufreq_pm_notifier_event(struct notifier_block *this, unsigne
 		break;
 	case PM_POST_RESTORE:
 	case PM_POST_SUSPEND:
-		cpufreq_driver_target(policy, suspend_freq, ENABLE_FURTHER_CPUFREQ | CPUFREQ_RELATION_H);
+		if (min_freq) {
+			cpufreq_update_freq(policy, min_freq, policy->max);
+			min_freq = 0;
+		}
 		ret = NOTIFY_OK;
 		break;
 	}
