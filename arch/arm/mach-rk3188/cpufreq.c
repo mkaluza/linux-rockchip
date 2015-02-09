@@ -67,7 +67,7 @@ static struct cpufreq_frequency_table *freq_table = default_freq_table;
 /* With 0x00(NOCHANGE), it depends on the previous "further" status */
 #define CPUFREQ_PRIVATE                 0x100
 static int no_cpufreq_access;
-static unsigned int suspend_freq = 600 * 1000;
+static unsigned int suspend_freq = 816 * 1000;
 #if defined(CONFIG_ARCH_RK3026)
 static unsigned int suspend_volt = 1100000; // 1.1V
 #else
@@ -453,6 +453,16 @@ static int rk3188_cpufreq_verify(struct cpufreq_policy *policy)
 	return cpufreq_frequency_table_verify(policy, freq_table);
 }
 
+static void rk3188_select_suspend_freq(void) {
+	int i, v = INT_MAX;
+	for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++) {
+		if (suspend_volt <= freq_table[i].index && freq_table[i].index < v) {
+			suspend_freq = freq_table[i].frequency;
+			v = freq_table[i].index;
+		}
+	}
+}
+
 static int rk3188_cpufreq_init_cpu0(struct cpufreq_policy *policy)
 {
 	unsigned int i;
@@ -487,14 +497,9 @@ static int rk3188_cpufreq_init_cpu0(struct cpufreq_policy *policy)
 	if (freq_table == NULL) {
 		freq_table = default_freq_table;
 	} else {
-		int v = INT_MAX;
-		for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++) {
-			if (freq_table[i].index >= suspend_volt && v > freq_table[i].index) {
-				suspend_freq = freq_table[i].frequency;
-				v = freq_table[i].index;
-			}
-		}
+		rk3188_select_suspend_freq();
 	}
+
 	low_battery_freq = get_freq_from_table(low_battery_freq);
 	clk_enable_dvfs(cpu_clk);
 	if(rk_tflag()){
@@ -708,16 +713,17 @@ static int rk3188_cpufreq_pm_notifier_event(struct notifier_block *this, unsigne
 {
 	int ret = NOTIFY_DONE;
 	struct cpufreq_policy *policy = cpufreq_cpu_get(0);
+	static int min_freq=0;
 
 	if (!policy)
 		return ret;
 
-	if (!cpufreq_is_ondemand(policy))
-		goto out;
-
 	switch (event) {
 	case PM_SUSPEND_PREPARE:
-		ret = cpufreq_driver_target(policy, suspend_freq, DISABLE_FURTHER_CPUFREQ | CPUFREQ_RELATION_H);
+		min_freq = policy->min;
+		rk3188_select_suspend_freq();
+		printk("rk3188 cpufreq: suspend freq %d MHz\n", suspend_freq / 1000);
+		ret = cpufreq_update_freq(policy, suspend_freq, policy->max);
 		if (ret < 0) {
 			ret = NOTIFY_BAD;
 			goto out;
@@ -726,7 +732,10 @@ static int rk3188_cpufreq_pm_notifier_event(struct notifier_block *this, unsigne
 		break;
 	case PM_POST_RESTORE:
 	case PM_POST_SUSPEND:
-		cpufreq_driver_target(policy, suspend_freq, ENABLE_FURTHER_CPUFREQ | CPUFREQ_RELATION_H);
+		if (min_freq) {
+			cpufreq_update_freq(policy, min_freq, policy->max);
+			min_freq = 0;
+		}
 		ret = NOTIFY_OK;
 		break;
 	}
