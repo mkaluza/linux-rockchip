@@ -453,6 +453,16 @@ static int rk3188_cpufreq_verify(struct cpufreq_policy *policy)
 	return cpufreq_frequency_table_verify(policy, freq_table);
 }
 
+static void rk3188_select_suspend_freq(void) {
+	int v = INT_MAX;
+	for (int i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++) {
+		if (suspend_volt <= freq_table[i].index && freq_table[i].index < v) {
+			suspend_freq = freq_table[i].frequency;
+			v = freq_table[i].index;
+		}
+	}
+}
+
 static int rk3188_cpufreq_init_cpu0(struct cpufreq_policy *policy)
 {
 	unsigned int i;
@@ -487,14 +497,9 @@ static int rk3188_cpufreq_init_cpu0(struct cpufreq_policy *policy)
 	if (freq_table == NULL) {
 		freq_table = default_freq_table;
 	} else {
-		int v = INT_MAX;
-		for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++) {
-			if (freq_table[i].index >= suspend_volt && v > freq_table[i].index) {
-				suspend_freq = freq_table[i].frequency;
-				v = freq_table[i].index;
-			}
-		}
+		rk3188_select_suspend_freq();
 	}
+
 	low_battery_freq = get_freq_from_table(low_battery_freq);
 	clk_enable_dvfs(cpu_clk);
 	if(rk_tflag()){
@@ -716,6 +721,8 @@ static int rk3188_cpufreq_pm_notifier_event(struct notifier_block *this, unsigne
 	switch (event) {
 	case PM_SUSPEND_PREPARE:
 		min_freq = policy->min;
+		select_suspend_freq();
+		printk("rk3188 cpufreq: suspend freq %d MHz\n", suspend_freq / 1000);
 		ret = cpufreq_update_freq(policy, suspend_freq, policy->max);
 		if (ret < 0) {
 			ret = NOTIFY_BAD;
