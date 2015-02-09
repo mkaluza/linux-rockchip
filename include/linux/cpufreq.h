@@ -25,6 +25,9 @@
 #define CPUFREQ_NAME_LEN 16
 
 
+//MK hack
+extern int cpufreq_update_freq(int cpu, unsigned int min, unsigned int max);
+
 /*********************************************************************
  *                     CPUFREQ NOTIFIER INTERFACE                    *
  *********************************************************************/
